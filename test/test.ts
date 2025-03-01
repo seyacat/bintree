@@ -2,13 +2,13 @@ import { Bintree } from "../bintree";
 
 const bt = new Bintree(8);
 
-bt.add(10);
+bt.add(10n);
 
-bt.add(0);
-bt.add(1);
-bt.add(5);
-bt.add(3);
-bt.add(520);
+bt.add(0n);
+bt.add(1n);
+bt.add(5n);
+bt.add(3n);
+bt.add(520n);
 
 
 console.dir(bt.toObject(), { depth: null });

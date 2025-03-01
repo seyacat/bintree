@@ -5,12 +5,12 @@ export class Bintree {
     this.bits = bits;
     this.root = { t: null, f: null };
   }
-  add = (n: number) => {
+  add = (n: bigint) => {
     let cursor = this.root;
     const bitLength = n.toString(2).length;
-    let lastBit = n >> (this.bits - 1);
+    let lastBit = n >> BigInt(this.bits - 1);
     for (let i = this.bits - 1; i >= 0; i--) {
-      const bit = i > bitLength ? false : ((n >> i) & 1) === 1;
+      const bit = i > bitLength ? false : ((n >> BigInt(i)) & 1n) === 1n;
       if (bit) {
         if (!cursor.t)
           cursor.t = new BintreeNode(
@@ -28,10 +28,10 @@ export class Bintree {
       }
     }
   };
-  find = (n: number) => {
+  find = (n: bigint) => {
     let cursor = this.root;
     for (let i = this.bits - 1; i >= 0; i--) {
-      const bit = (n >> i) & 1;
+      const bit = (n >> BigInt(i)) & 1n;
       if (bit) {
         if (!cursor.t) return false;
         cursor = cursor.t;
@@ -44,8 +44,8 @@ export class Bintree {
   };
   toArray = () => {
     return [
-      ...(this.root.t?.toArray(this.bits, 1) ?? []),
-      ...(this.root.f?.toArray(this.bits, 0) ?? []),
+      ...(this.root.t?.toArray(this.bits, 1n) ?? []),
+      ...(this.root.f?.toArray(this.bits, 0n) ?? []),
     ].flat();
   };
   toObject = (i = this.bits) => {
@@ -61,7 +61,7 @@ export class WordTree {
   constructor(w: string) {
     this.tree = new Bintree(w.length);
     for (let i = 0; i < w.length; i++) {
-      this.tree.add(w.charCodeAt(i));
+      this.tree.add(BigInt(w.charCodeAt(i)));
     }
   }
   toObject = () => this.tree.toObject();
@@ -80,14 +80,14 @@ export class BintreeNode {
     if (this.f && i - 1 > 0) ret.f = this.f.toObject(i - 1);
     return ret;
   };
-  toArray = (i = 0, n: number): number[] => {
+  toArray = (i = 0, n: bigint): bigint[] => {
     if (i - 1 <= 0) return [n];
-    let ret: number[] = [];
+    let ret: bigint[] = [];
     if (this.t) {
-      ret = this.t.toArray(i - 1, (n << 1) | 1);
+      ret = this.t.toArray(i - 1, (n << 1n) | 1n);
     }
     if (this.f) {
-      ret = [...ret, ...this.f.toArray(i - 1, (n << 1) | 0)];
+      ret = [...ret, ...this.f.toArray(i - 1, (n << 1n) | 0n)];
     }
     return ret;
   };
