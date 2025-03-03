@@ -23,8 +23,12 @@ console.log(bt.indexToArray())
 bt.add(9n);
 console.log(bt.indexToArray())
 
+bt.add(10n);
+console.log(bt.indexToArray())
 
+console.log(bt.toArray())
 
+console.log(JSON.stringify(bt.toObject(), null, 2))
 
 
 /*bt.add(4n);

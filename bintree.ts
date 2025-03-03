@@ -54,11 +54,9 @@ export class Bintree {
     );
   };
   add = (n: bigint, index?: bigint) => {
-    console.log({ nav: this.nextAvailableIndex() });
     index = index ?? this.nextAvailableIndex();
     this._add(this.root, n);
     this._add(this.indexRoot, index);
-    //console.dir({"in":this.indexRoot.toObject(100)},{depth:null})
   };
 
   _add = (rootNode: BintreeNode, n: bigint) => {
@@ -138,43 +136,31 @@ export class Bintree {
     let cursor = this.indexRoot;
     let index: bigint = 1n;
     for (let i = 0n; i < this.bits; i++) {
-      
-      console.log("fulltest", i, cursor.f?.isFull(this.bits - Number(i) - 1));
       if (
         cursor.f &&
         !cursor.t &&
-        (cursor.f.isFull(this.bits - Number(i) - 2) || i === BigInt(this.bits) - 1n)
+        (cursor.f.isFull(this.bits - Number(i) - 2) ||
+          i === BigInt(this.bits) - 1n)
       ) {
-        console.log(
-          "condicion 1",
-          i,
-          BigInt(this.bits) - i - 1n,
-          JSON.stringify(cursor.toObject(100), null, 2)
-        );
         index = (index << 1n) | 1n;
         index = index << (BigInt(this.bits) - i - 1n);
         break;
       }
       if (cursor.t) {
-        console.log("condicion 2");
         index = (index << 1n) | 1n;
         cursor = cursor.t;
         continue;
       }
       if (cursor.f) {
-        console.log("condicion 3");
         index = index << 1n;
         cursor = cursor.f;
         continue;
       }
       if (!cursor.f) {
-        console.log("condicion 4");
         index = index << (BigInt(this.bits) - i);
         break;
       }
-      console.log("INDEXIN", index.toString(2));
     }
-    console.log("INDEX", index.toString(2));
     return index;
   };
   fromArray = (arr: bigint[]) => {
@@ -198,7 +184,7 @@ export class Bintree {
     return (this.root.toBigInt(this.bits, 1n) << 1n) | 1n; //WITH PREFIX 1 AND TRAILING 1
   };
   toObject = (i = this.bits) => {
-    return this.root.toObject(100);
+    return this.root.toObject(this.bits);
   };
 }
 
@@ -228,8 +214,8 @@ export class BintreeNode {
   }
   toObject = (i = 0) => {
     const ret: any = {};
-    if (this.t && i - 1 > 0) ret.t = this.t.toObject(i - 1);
-    if (this.f && i - 1 > 0) ret.f = this.f.toObject(i - 1);
+    if (this.t && i > 0) ret.t = this.t.toObject(i - 1);
+    if (this.f && i > 0) ret.f = this.f.toObject(i - 1);
     return ret;
   };
   toArray = (i = 0, n: bigint): bigint[] => {
@@ -255,7 +241,6 @@ export class BintreeNode {
     return n;
   };
   isFull = (i = 0): boolean => {
-    console.dir({ FULLIN: 1, i, ob: this.toObject(100) }, { depth: null });
     return (
       this.t != null &&
       this.f != null &&
