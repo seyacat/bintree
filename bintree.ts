@@ -55,11 +55,12 @@ export class Bintree {
   };
   add = (n: bigint, index?: bigint) => {
     index = index ?? this.nextAvailableIndex();
-    this._add(this.root, n);
-    this._add(this.indexRoot, index);
+    const lastNode = this._add(this.root, n);
+    const lastIndexNode = this._add(this.indexRoot, index);
+    lastNode.t=lastIndexNode;
   };
 
-  _add = (rootNode: BintreeNode, n: bigint) => {
+  _add = (rootNode: BintreeNode, n: bigint): BintreeNode => {
     let cursor = rootNode;
     const bitLength = n.toString(2).length;
     let lastBit = n >> BigInt(this.bits - 1);
@@ -83,6 +84,7 @@ export class Bintree {
         cursor = cursor.f;
       }
     }
+    return cursor;
   };
 
   remove = (n: bigint) => {
